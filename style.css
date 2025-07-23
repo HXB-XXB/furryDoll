@@ -1,0 +1,38 @@
+.doll {
+    all: initial;
+    position: fixed;
+    z-index: 99999999999999999999999;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+    transition: opacity 100ms ease-in-out, transform 500ms ease-in-out;
+    transform: translate(0, -50%);
+    pointer-events: all;
+    width: 100px;
+    height: 100px;
+}
+.doll::after {
+    pointer-events: none;
+    opacity: 1;
+}
+.doll:hover {
+    pointer-events: all;
+    opacity: 0.9;
+}
+
+.dollBody {
+    display: inline;
+    position: relative;
+    z-index: 1
+}
+
+.dollHand {
+    display: inline;
+    position: relative;
+    transform-origin: left bottom;
+    left: -60px;
+    top: -10px;
+    z-index: 0;
+}

@@ -1,0 +1,16 @@
+
+{
+    "manifest_version": 3,
+    "name": "FurryDoll",
+    "version": "1.0",
+    "description": "帮你在浏览器上养设",
+    "web_accessible_resources": [{
+        "resources": ["img/*", "style.css"],
+        "matches": ["<all_urls>"]
+    }],
+    "content_scripts": [{
+        "matches": ["<all_urls>"],
+        "js": ["content.js"],
+        "run_at": "document_end"
+    }]
+}
