@@ -1,17 +1,31 @@
 .doll {
+    --deg: 0deg;
+    --scaleX: 1;
+    --translate: -4px, -50%;
+
     all: initial;
     position: fixed;
-    z-index: 99999999999999999999999;
+    z-index: 2147483647;/* INT_MAX */
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
     white-space: nowrap;
-    transition: opacity 100ms ease-in-out, transform 500ms ease-in-out;
-    transform: translate(0, -50%);
+
+    transition-property: opacity, transform;
+    transition-duration: 100ms, 300ms;
+    transition-timing-function: ease-in-out;
+    transition-property: opacity, translate, scale;
+
+    transform: translate(var(--translate)) scaleX(var(--scaleX)) rotate(var(--deg));
+    transform-origin: 0 50%;
     pointer-events: all;
     width: 100px;
     height: 100px;
+    cursor: grab;
+    -webkit-context-menu: none;
+    context-menu: none;
+    filter: drop-shadow(2px 2px 4px rgba(255, 255, 255, 0.5));
 }
 .doll::after {
     pointer-events: none;
@@ -25,13 +39,13 @@
 .dollBody {
     display: inline;
     position: relative;
-    z-index: 1
+    z-index: 1;
 }
 
 .dollHand {
     display: inline;
     position: relative;
-    transform-origin: left bottom;
+    transform-origin: 0 100%;
     left: -60px;
     top: -10px;
     z-index: 0;

@@ -8,9 +8,17 @@
         "resources": ["img/*", "style.css"],
         "matches": ["<all_urls>"]
     }],
+    "action": {
+        "default_popup": "popup.html"
+    },
     "content_scripts": [{
         "matches": ["<all_urls>"],
         "js": ["content.js"],
         "run_at": "document_end"
-    }]
+    }],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": ["storage", "scripting", "fileSystem"],
+    "host_permissions": ["<all_urls>"]
 }
