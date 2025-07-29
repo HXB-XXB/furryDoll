@@ -45,14 +45,11 @@ function addFurry(url, name) {
 }
 
 function closeChooseFilePage() {
-    let div = document.getElementById("newFurry");
+    let div = document.getElementById("inputContainer");
     let ipt = document.getElementById("inputDiv");
     let btn = document.getElementById("addBtn");
-    div.style.transform = "translate(-50%, calc(-100% - 25px)) rotate(0deg)";
-    btn.style.top = "0px";
-    btn.style.opacity = "1";
-    ipt.style.display = "none";
-    ipt.style.opacity = "0";
+    div.style.setProperty('--widthMultiple', `-0.25`);
+    div.style.clipPath = `inset(0 ${div.offsetWidth / 2}px 0 0)`;
 }
 
 chrome.runtime.sendMessage({
@@ -94,12 +91,9 @@ enter.addEventListener('click', async () => {
 
 
 document.getElementById('addBtn').addEventListener('click', async () => {
-    let div = document.getElementById("newFurry");
+    let div = document.getElementById("inputContainer");
     let ipt = document.getElementById("inputDiv");
     let btn = document.getElementById("addBtn");
-    div.style.transform = "translate(-50%, calc(-100% - 25px)) rotate(180deg)";
-    btn.style.top = "45px";
-    btn.style.opacity = "0";
-    ipt.style.display = "block";
-    ipt.style.opacity = "1";
+    div.style.setProperty('--widthMultiple', `-0.75`);
+    div.style.clipPath = `inset(0 0 0 ${div.offsetWidth / 2}px)`;
 });

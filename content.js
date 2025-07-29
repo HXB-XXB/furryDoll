@@ -42,6 +42,28 @@ chrome.runtime.sendMessage({
     name: furryName
 });
 
+function tryChangeFurry() {
+    chrome.storage.local.get(["fileName"], (data) => {
+        if(!data.fileName) return false;
+        if(furryName === data.fileName) return true;
+        furryName = data.fileName;
+        updateImgUrls();
+        chrome.runtime.sendMessage({
+            type: 'updatePopup',
+            imgUrl: imgUrls.bottomBody,
+            name: data.fileName
+        });
+        const allImages = div.querySelectorAll("img");
+        for (let i = 0; i < allImages.length; i++) {
+            const newSrc = arrayMapReplace(allImages[i].src, oldImgUrls, imgUrls);
+            allImages[i].src = newSrc;
+        }
+        oldImgUrls = imgUrls;// 备份用
+        updateDoll(false);
+        return true;
+    });
+}
+
 function getAllImages(container) {
     const images = [];
     const walker = document.createTreeWalker(
@@ -92,25 +114,14 @@ function updateImgUrls() {
         alert("err");
     }
 }
+let intervalId = setInterval(() => {
+    if(tryChangeFurry()) {
+        clearInterval(intervalId);
+    }
+}, 50);
 
 setInterval(() => {
-    chrome.storage.local.get(["fileName"], (data) => {
-        if(furryName === data.fileName) return;
-        furryName = data.fileName;
-        updateImgUrls();
-        chrome.runtime.sendMessage({
-            type: 'updatePopup',
-            imgUrl: imgUrls.bottomBody,
-            name: data.fileName
-        });
-        const allImages = div.querySelectorAll("img");
-        for (let i = 0; i < allImages.length; i++) {
-            const newSrc = arrayMapReplace(allImages[i].src, oldImgUrls, imgUrls);
-            allImages[i].src = newSrc;
-        }
-        oldImgUrls = imgUrls;// 备份用
-        updateDoll(false);
-    });
+    tryChangeFurry();
 }, 500);
 
 window.onload = (() => {

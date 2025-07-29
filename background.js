@@ -3,6 +3,7 @@ let furryNameList = [
 let furryName = null; // 默认模型，每次onload时生成
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    chrome.storage.local.set({ state: extensionState });
     if (message.type === 'updatePopup') {
         console.log(message.imgUrl);
         furryName = message.name;
@@ -36,4 +37,30 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({status: 'stored'});
     }
     return true;
+});
+
+// 保存状态到本地存储
+let extensionState = {
+  lastRun: new Date().toISOString(),
+  data: {}
+};
+
+// 启动时恢复状态
+chrome.runtime.onStartup.addListener(() => {
+    chrome.storage.local.get(['state'], (result) => {
+        if (result.state) {
+        extensionState = result.state;
+        console.log('State restored:', extensionState);
+        }
+    });
+});
+
+// 定期保存状态
+setInterval(() => {
+    chrome.storage.local.set({ state: extensionState });
+}, 1000);
+
+// 监听安装事件
+chrome.runtime.onInstalled.addListener(() => {
+    console.log('Extension installed');
 });
