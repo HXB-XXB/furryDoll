@@ -5,6 +5,25 @@ function addFurry(url, name) {
     if(document.getElementById(name) || !name) return;
     if(document.getElementById("loadingTxt")) {
         document.getElementById("loadingTxt").remove();
+        chrome.runtime.sendMessage({
+            type: 'cleanError'
+        });
+        setInterval(() => {
+            chrome.storage.local.get(['err'], (data) => {
+                if(!data.err || data.err === "") return;
+                lastErr = data.err;
+                let btn = document.getElementById("addBtn");
+                btn.textContent = data.err;
+                setTimeout(() => {
+                    if(btn.textContent === data.err) {
+                        btn.textContent = "+ 添加模型";
+                        chrome.runtime.sendMessage({
+                            type: 'cleanError'
+                        });
+                    }
+                }, 2000);
+            });
+        }, 500);
     }
     furryNameList.push({
         imgUrl: url,
@@ -20,6 +39,7 @@ function addFurry(url, name) {
     div.addEventListener('click', () => {
         document.getElementById(`${lastName}UseTips`).style.display = "none";
         document.getElementById(`${name}UseTips`).style.display = "block";
+        document.getElementById(`background`).style.backgroundImage = `url(${document.getElementById(`${name}Icon`).src})`;
         lastName = name;
         chrome.runtime.sendMessage({
             type: 'updateContent',
@@ -30,6 +50,7 @@ function addFurry(url, name) {
     let icon = document.createElement("img");
     icon.src = url;
     icon.className = "img";
+    icon.id = `${name}Icon`;
     div.appendChild(icon);
     
     let useTxtTxt = document.createElement("h3");
@@ -64,6 +85,7 @@ setInterval(() => {
         }
         document.getElementById(`${lastName}UseTips`).style.display = "none";
         document.getElementById(`${furryName}UseTips`).style.display = "block";
+        document.getElementById(`background`).style.backgroundImage = `url(${document.getElementById(`${furryName}Icon`).src})`;
         lastName = furryName;
     });
 }, 500);
@@ -96,4 +118,12 @@ document.getElementById('addBtn').addEventListener('click', async () => {
     let btn = document.getElementById("addBtn");
     div.style.setProperty('--widthMultiple', `-0.75`);
     div.style.clipPath = `inset(0 0 0 ${div.offsetWidth / 2}px)`;
+    chrome.runtime.sendMessage({
+        type: 'cleanError'
+    });
+    btn.textContent = "+ 添加模型";
+});
+
+document.getElementById('anotherBtn').addEventListener('click', () => {
+    chrome.tabs.create({url: 'https://github.com/HXB-XXB'});
 });

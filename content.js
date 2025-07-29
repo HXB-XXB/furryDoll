@@ -24,6 +24,8 @@ let tailRad = 0;
 
 let divHeight = 100;
 
+let errInfo;
+
 const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.href = chrome.runtime.getURL('style.css');
@@ -42,17 +44,25 @@ chrome.runtime.sendMessage({
     name: furryName
 });
 
-function tryChangeFurry() {
-    chrome.storage.local.get(["fileName"], (data) => {
+async function tryChangeFurry() {
+    chrome.storage.local.get(["fileName"], async (data) => {
         if(!data.fileName) return false;
         if(furryName === data.fileName) return true;
         furryName = data.fileName;
-        updateImgUrls();
-        chrome.runtime.sendMessage({
-            type: 'updatePopup',
-            imgUrl: imgUrls.bottomBody,
-            name: data.fileName
-        });
+        if(!(await updateImgUrls())) {
+            chrome.runtime.sendMessage({
+                type: 'updateError',
+                err: errInfo
+            });
+            return false;
+        }
+        else {
+            chrome.runtime.sendMessage({
+                type: 'updatePopup',
+                imgUrl: imgUrls.bottomBody,
+                name: data.fileName
+            });
+        }
         const allImages = div.querySelectorAll("img");
         for (let i = 0; i < allImages.length; i++) {
             const newSrc = arrayMapReplace(allImages[i].src, oldImgUrls, imgUrls);
@@ -97,7 +107,7 @@ function arrayMapReplace(target, objA, objB) {
     return target;
 }
 
-function updateImgUrls() {
+async function updateImgUrls() {
     imgUrls = {
         body: chrome.runtime.getURL(`img/${furryName}/body.svg`),
         hand: chrome.runtime.getURL(`img/${furryName}/hand.svg`),
@@ -110,19 +120,27 @@ function updateImgUrls() {
         bottomTail: chrome.runtime.getURL(`img/${furryName}/bottomTail.svg`),
         fallBody: chrome.runtime.getURL(`img/${furryName}/fallBody.svg`)
     };
-    if(!(imgUrls.body && imgUrls.hand && imgUrls.fallBodyOuch && imgUrls.dragBody && imgUrls.dragTail && imgUrls.bottomBodyHappy && imgUrls.bottomBody && imgUrls.bodyHappy && imgUrls.bottomTail && imgUrls.fallBody)) {
-        alert("err");
-    }
-}
-let intervalId = setInterval(() => {
-    if(tryChangeFurry()) {
-        clearInterval(intervalId);
-    }
-}, 50);
+    const checkPromises = Object.entries(imgUrls).map(async ([key, url]) => {
+        try {
+            const res = await fetch(url, { method: 'HEAD' });
+            return res.ok ? null : key; // 返回缺失的资源键名
+        } catch {
+            return key;
+        }
+    });
 
-setInterval(() => {
-    tryChangeFurry();
-}, 500);
+    const missingKeys = (await Promise.all(checkPromises)).filter(Boolean);
+    if (missingKeys.length) {
+        imgUrls = oldImgUrls;
+        errInfo = `ERR: 缺失资源文件: ${missingKeys.join(', ')}`
+        return false;
+    }
+    return true;
+}
+let intervalId;
+intervalId = setInterval(() => {
+    tryChangeFurry()
+}, 50);
 
 window.onload = (() => {
     mouseX = 0, mouseY = document.documentElement.clientHeight / 2;

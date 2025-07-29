@@ -36,6 +36,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
         sendResponse({status: 'stored'});
     }
+    else if (message.type === 'updateError') {
+        chrome.storage.local.set({
+            err: message.err
+        });
+        sendResponse({status: 'stored'});
+    }
+    else if (message.type === 'cleanError') {
+        chrome.storage.local.set({
+            err: ""
+        });
+        sendResponse({status: 'stored'});
+    }
     return true;
 });
 

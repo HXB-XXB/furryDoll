@@ -3,9 +3,38 @@
 <head>
     <meta charset="utf-8">
     <style>
+        /* 定义英文字体 */
+        @font-face {
+            font-family: 'EnglishFont';
+            src: local("Comic Sans MS");
+            unicode-range: U+0020-007F;
+        }
+
+        /* 定义中文字体 */
+        @font-face {
+            font-family: 'ChineseFont';
+            src: local("YouYuan");
+            unicode-range: U+4E00-9FFF;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: normal;
+        }
         body, html {
             background-color: #242424;
             margin: 0;
+            font-family: 'EnglishFont', 'ChineseFont', sans-serif;
+        }
+
+        #background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(5px) brightness(75%);
         }
         #container {
             background-color: #2d2d2d;
@@ -40,24 +69,41 @@
             width: 50px;
         }
         #furryList {
+            position: relative;
+            width: 90%;
+            left: 50%;
+            transform: translateX(-50%);
             list-style-type: none;
             text-align: center;
             padding-inline-start: 0px;
             overflow: auto;
             height: calc(100vh - 150px);
+            border-style: solid;
+            border-radius: 5px;
+            border-width: 0;
         }
         #furryList::-webkit-scrollbar {
             width: 10px;
             background-color: #2d2d2d;
+            border-style: solid;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            border-width: 0;
         }
 
         #furryList::-webkit-scrollbar-thumb {
             background-color: #777;
+            border-style: solid;
             border-radius: 5px;
+            border-width: 0;
         }
 
         #furryList::-webkit-scrollbar-track {
             background-color: #292929;
+            border-style: solid;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            border-width: 0;
         }
 
         #newFurry {
@@ -88,20 +134,24 @@
             border-style: solid;
             border-radius: 5px;
             border-width: 2px;
-            border-color: #242424;
-            background-color: #5f5f5f;
+            border-color: #24242498;
+            background-color: #5f5f5f98;
             color: #fff;
             transform: translateY(-12.5px);
+            font-family: 'EnglishFont', 'ChineseFont', sans-serif;
         }
         #addBtn:hover {
             box-shadow: 0 0 2px rgba(0,0,0,0.3);
-            background-color: #75bcff;
+            background-color: #75bcff98;
         }
         #inputDiv {
             transition: opacity 150ms ease-in-out;
             display: inline-block;
+            position: relative;
+            left: -2px;
         }
         .input {
+            transition: border 150ms ease-in-out;
             position: relative;
             top: -7px;
             margin-top: 13px;
@@ -109,8 +159,13 @@
             border-width: 0px;
             background-color: transparent;
             color: #fff;
-            width: 170px;
+            width: 175px;
             height: 30px;
+            border-style: solid;
+            border-radius: 3px;
+            border-width: 0;
+            background-color: #5f5f5f98;
+            font-family: 'EnglishFont', 'ChineseFont', sans-serif;
         }
         .input::placeholder {
             color: #a8a8a8;
@@ -124,11 +179,11 @@
             border-radius: 5px;
             border-width: 2px;
             border-color: #242424;
-            background-color: #5f5f5f;
+            background-color: #5f5f5f98;
             color: #fff;
         }
         .littleBtn:hover {
-            background-color: #75bcff;
+            background-color: #75bcff98;
             box-shadow: 0 0 2px rgba(0,0,0,0.3);
         }
 
@@ -136,15 +191,22 @@
             transition: background-color 150ms ease-in-out, border 150ms ease-in-out, box-shadow 150ms ease-in-out, opacity 150ms ease-in-out;
             margin: 0;
             border-bottom: #7e7e7e solid 1px;
-            background-color: #363636;
+            background-color: #36363698;
+            cursor: pointer;
         }
         .li:hover {
-            background-color: #494949
+            background-color: #49494998
+        }
+
+        .link {
+            color: #9cd3e4;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
     <div id="container">
+        <div id="background"></div>
         <div id="mainDiv">
             <h2 class="txt">已有模型</h2>
             <h3 id="loadingTxt">加载中...</h3>
@@ -163,9 +225,9 @@
                     </div>
                 </div>
             </div>
+            <h4 id="anotherBtn" style="position: fixed; top: 100vh; left: 50vw; transform: translate(-50%, -325%); color: #fff; cursor: pointer; opacity: 0.5;">by <a class="link">xxb</a></h4>
         </div>
     </div>
-    <a href="https://github.com/HXB-XXB/furryDoll">by xxb</a>
 </body>
 <script src="popup.js"></script>
 </html>
